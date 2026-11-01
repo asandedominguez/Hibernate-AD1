@@ -17,7 +17,7 @@ public class PokedexServices {
             session.save(pokemon);
             transaction.commit();
         } catch (Exception e) {
-            System.out.println("Erro ao crear o pokemon: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -25,7 +25,7 @@ public class PokedexServices {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             return session.get(Pokedex.class, id);
         } catch (Exception e) {
-            System.out.println("Erro ao ler o pokemon por ID: " + e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -36,18 +36,17 @@ public class PokedexServices {
             session.update(pokemon);
             transaction.commit();
         } catch (Exception e) {
-            System.out.println("Erro ao actualizar o pokemon: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
-    // Eliminar pasando o obxecto
     public void eliminarPokemon(Pokedex pokemon) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.delete(pokemon);
             transaction.commit();
         } catch (Exception e) {
-            System.out.println("Erro ao eliminar o pokemon: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -55,27 +54,27 @@ public class PokedexServices {
         Pokedex pokemon = null;
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             session.beginTransaction();
-            List<Pokedex> lista = session.createQuery("from Pokedex where nome = :nome", Pokedex.class)
+            List<Pokedex> lista = session.createQuery("FROM Pokedex WHERE nome = :nome", Pokedex.class)
                     .setParameter("nome", nome)
                     .getResultList();
 
             if (!lista.isEmpty()) {
                 pokemon = lista.get(0);
             } else {
-                System.out.println("Non se atopou o pokemon co nome: " + nome);
+                System.out.println(nome);
             }
             session.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println("Erro ao buscar o pokemon por query: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
         return pokemon;
     }
 
     public List<Pokedex> listarPokemons() {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            return session.createQuery("from Pokedex", Pokedex.class).getResultList();
+            return session.createQuery("FROM Pokedex", Pokedex.class).getResultList();
         } catch (Exception e) {
-            System.out.println("Erro ao listar os pokemons: " + e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -83,11 +82,11 @@ public class PokedexServices {
     public void eliminarTodosOsPokemonsQuery() {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            int deletedCount = session.createQuery("delete from Pokedex").executeUpdate();
+            int deletedCount = session.createQuery("DELETE FROM Pokedex").executeUpdate();
             transaction.commit();
-            System.out.println("Elimináronse " + deletedCount + " pokemons da pokedex mediante Query.");
+            System.out.println("Se eliminaron " + deletedCount + " Pokemons");
         } catch (Exception e) {
-            System.out.println("Erro ao eliminar tódolos pokemons con query: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 }

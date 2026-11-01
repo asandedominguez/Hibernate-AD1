@@ -10,8 +10,6 @@ import java.util.List;
 
 public class AdestradorServices {
 
-    // --- OPERACIÓNS CON OBXECTOS ---
-
     public void crearAdestrador(String nome, Date nacemento) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -19,7 +17,7 @@ public class AdestradorServices {
             session.save(adestrador);
             transaction.commit();
         } catch (Exception e) {
-            System.out.println("Erro ao crear o adestrador: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -27,7 +25,7 @@ public class AdestradorServices {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             return session.get(Adestrador.class, id);
         } catch (Exception e) {
-            System.out.println("Erro ao ler o adestrador por ID: " + e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -38,7 +36,7 @@ public class AdestradorServices {
             session.update(adestrador);
             transaction.commit();
         } catch (Exception e) {
-            System.out.println("Erro ao actualizar o adestrador: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -48,17 +46,15 @@ public class AdestradorServices {
             session.delete(adestrador);
             transaction.commit();
         } catch (Exception e) {
-            System.out.println("Erro ao eliminar o adestrador: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
-
-    // --- OPERACIÓNS MEDIANTE QUERIES (HQL) ---
 
     public Adestrador lerAdestradorPorNome(String nome) {
         Adestrador adestrador = null;
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             session.beginTransaction();
-            List<Adestrador> lista = session.createQuery("from Adestrador where nome = :nome", Adestrador.class)
+            List<Adestrador> lista = session.createQuery("FROM Adestrador WHERE nome = :nome", Adestrador.class)
                     .setParameter("nome", nome)
                     .getResultList();
 
@@ -67,16 +63,16 @@ public class AdestradorServices {
             }
             session.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println("Erro ao buscar o adestrador por query: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
         return adestrador;
     }
 
     public List<Adestrador> listarAdestradores() {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            return session.createQuery("from Adestrador", Adestrador.class).getResultList();
+            return session.createQuery("FROM Adestrador", Adestrador.class).getResultList();
         } catch (Exception e) {
-            System.out.println("Erro ao listar os adestradores: " + e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -84,11 +80,11 @@ public class AdestradorServices {
     public void eliminarTodosOsAdestradoresQuery() {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            int count = session.createQuery("delete from Adestrador").executeUpdate();
+            int count = session.createQuery("DELETE FROM Adestrador").executeUpdate();
             transaction.commit();
-            System.out.println("Elimináronse " + count + " adestradores mediante Query.");
+            System.out.println("Se eliminaron:  " + count + " adestradores");
         } catch (Exception e) {
-            System.out.println("Erro ao eliminar adestradores con query: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 }

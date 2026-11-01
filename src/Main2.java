@@ -2,20 +2,18 @@ import model.Adestrador;
 import model.Pokedex;
 import services.AdestradorServices;
 import services.PokedexServices;
-import utils.XmlExportUtil;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class Main2 {
     public static void main(String[] args) {
+
         PokedexServices pokedexServices = new PokedexServices();
         AdestradorServices adestradorServices = new AdestradorServices();
 
-        // 1. Inserir 10 pokemons na táboa pokedex
-        System.out.println("=== 1. INSERINDO 10 POKEMONS ===");
+        // Crear Pokémons
         pokedexServices.crearPokemon("Bulbasaur", new BigDecimal("6.9"), "Planta/Veneno");
         pokedexServices.crearPokemon("Charmander", new BigDecimal("8.5"), "Fogo");
         pokedexServices.crearPokemon("Squirtle", new BigDecimal("9.0"), "Aga");
@@ -27,35 +25,36 @@ public class Main2 {
         pokedexServices.crearPokemon("Gengar", new BigDecimal("40.5"), "Pantasma/Veneno");
         pokedexServices.crearPokemon("Mewtwo", new BigDecimal("122.0"), "Psíquico");
 
-        // 2. Inserir 2 adestradores na táboa adestrador
-        System.out.println("\n=== 2. INSERINDO 2 ADESTRADORES ===");
-        adestradorServices.crearAdestrador("Ash Ketchum", crearData(1987, Calendar.MAY, 22));
-        adestradorServices.crearAdestrador("Misty", crearData(1990, Calendar.DECEMBER, 11));
+        System.out.println("Insertando entrenadores");
+        adestradorServices.crearAdestrador("Ash Ketchum", new Date());
+        adestradorServices.crearAdestrador("Misty", new Date());
 
-        // 3. Listar pokemons na pokedex
-        System.out.println("\n=== 3. LISTAR POKEMONS (INICIAL) ===");
-        listarPokemons(pokedexServices);
+        System.out.println("Listar");
+        List<Pokedex> pokedexList = pokedexServices.listarPokemons();
+        for (Pokedex pokemon : pokedexList) {
+            System.out.println(pokemon);
+        }
 
-        // 4. Listar adestradores
-        System.out.println("\n=== 4. LISTAR ADESTRADORES (INICIAL) ===");
-        listarAdestradores(adestradorServices);
+        System.out.println("Listar entrenadores");
+        List<Adestrador> adestradorList = adestradorServices.listarAdestradores();
+        for (Adestrador adestrador : adestradorList) {
+            System.out.println(adestrador);
+        }
 
-        // 5. Modificar dous adestradores
-        System.out.println("\n=== 5. MODIFICAR DOUS ADESTRADORES ===");
+        System.out.println("Modificar entrenadores");
         Adestrador ash = adestradorServices.lerAdestradorPorNome("Ash Ketchum");
         if (ash != null) {
-            ash.setNome("Ash Ketchum (Campión)");
+            ash.setNome("Ash Ketchum");
             adestradorServices.actualizarAdestrador(ash);
         }
 
         Adestrador misty = adestradorServices.lerAdestradorPorNome("Misty");
         if (misty != null) {
-            misty.setNome("Misty (Líder de Ximnasio)");
+            misty.setNome("Misty");
             adestradorServices.actualizarAdestrador(misty);
         }
 
-        // 6. Modificar dúas entradas na pokedex
-        System.out.println("\n=== 6. MODIFICAR DUAS ENTRADAS NA POKEDEX ===");
+        System.out.println("Modificar");
         Pokedex pikachu = pokedexServices.lerPokemonPorNome("Pikachu");
         if (pikachu != null) {
             pikachu.setPeso(new BigDecimal("7.0"));
@@ -65,57 +64,35 @@ public class Main2 {
 
         Pokedex snorlax = pokedexServices.lerPokemonPorNome("Snorlax");
         if (snorlax != null) {
-            snorlax.setMisc("Normal - Mega Snorlax");
+            snorlax.setMisc("Normal - Mega");
             pokedexServices.actualizarPokemon(snorlax);
         }
 
-        // 7. Listar pokemons na pokedex
-        System.out.println("\n=== 7. LISTAR POKEMONS (MODIFICADOS) ===");
-        List<Pokedex> listaPokemons = pokedexServices.listarPokemons();
-        mostrarLista(listaPokemons);
+        System.out.println("Listar modificado");
+        pokedexList = pokedexServices.listarPokemons();
+        for (Pokedex pokemon : pokedexList) {
+            System.out.println(pokemon);
+        }
 
-        // 8. Listar adestradores
-        System.out.println("\n=== 8. LISTAR ADESTRADORES (MODIFICADOS) ===");
-        List<Adestrador> listaAdestradores = adestradorServices.listarAdestradores();
-        mostrarLista(listaAdestradores);
+        System.out.println("Listar entrenadores modificados");
+        adestradorList = adestradorServices.listarAdestradores();
+        for (Adestrador adestrador : adestradorList) {
+            System.out.println(adestrador);
+        }
 
-        // 9 & 10. EXPORTAR A XML (toXML pokemons e adestradores)
-        System.out.println("\n=== EXPORTANDO A XML ===");
-        XmlExportUtil.pokemonsToXML(listaPokemons, "pokemons.xml");
-        XmlExportUtil.adestradoresToXML(listaAdestradores, "adestradores.xml");
-
-        // 11. Eliminar tódo-los datos das táboas
-        System.out.println("\n=== ELIMINANDO TÓDO-LOS DATOS DAS TÁBOAS ===");
+        System.out.println("Eliminar");
         pokedexServices.eliminarTodosOsPokemonsQuery();
         adestradorServices.eliminarTodosOsAdestradoresQuery();
 
-        // Comprobación final
-        System.out.println("\n=== COMPROBACIÓN FINAL (TÁBOAS VAZAS) ===");
-        listarPokemons(pokedexServices);
-        listarAdestradores(adestradorServices);
-    }
-
-    private static void listarPokemons(PokedexServices pokedexServices) {
-        mostrarLista(pokedexServices.listarPokemons());
-    }
-
-    private static void listarAdestradores(AdestradorServices adestradorServices) {
-        mostrarLista(adestradorServices.listarAdestradores());
-    }
-
-    private static <T> void mostrarLista(List<T> lista) {
-        if (lista == null || lista.isEmpty()) {
-            System.out.println("A táboa está baleira.");
-        } else {
-            for (T elem : lista) {
-                System.out.println(elem);
-            }
+        System.out.println("Listado final");
+        pokedexList = pokedexServices.listarPokemons();
+        for (Pokedex pokemon : pokedexList) {
+            System.out.println(pokemon);
         }
-    }
 
-    private static Date crearData(int ano, int mes, int dia) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(ano, mes, dia);
-        return cal.getTime();
+        adestradorList = adestradorServices.listarAdestradores();
+        for (Adestrador adestrador : adestradorList) {
+            System.out.println(adestrador);
+        }
     }
 }
